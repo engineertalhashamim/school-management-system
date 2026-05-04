@@ -5,8 +5,9 @@ import { connectDB, sequelize } from './config/db.js';
 
 import User from './models/user.model.js';
 
-// Import router
+// Import routes
 import authRoutes from './routes/auth.routes.js';
+import classRoutes from './routes/class.routes.js';
 import { errorHandler } from './middlewares/error.middleware.js';
 
 dotenv.config();
@@ -22,6 +23,8 @@ await sequelize.sync({ alter: false });
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/classes', classRoutes);
+
 
 app.get('/', (req, res) => {
   res.json({ message: 'School Management API is running!' });
