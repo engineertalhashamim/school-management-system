@@ -1,115 +1,65 @@
-let students = [
-  {
-    id: 1,
-    name: "Ali Ahmed",
-    email: "ali@gmail.com",
-    roll: "SMS-001",
-    class: "10A",
-  },
-  {
-    id: 2,
-    name: "Sara Khan",
-    email: "sara@gmail.com",
-    roll: "SMS-002",
-    class: "10B",
-  },
-  {
-    id: 3,
-    name: "Usman Malik",
-    email: "usman@gmail.com",
-    roll: "SMS-003",
-    class: "9A",
-  },
-];
+import Student from '../models/student.model.js';
+import Class from '../models/class.model.js';
 
 const getAllStudents = async (req, res) => {
-  return res.status(200).json({
-    success: true,
-    message: "Students fetched successfully",
-    data: students,
-  });
+  try {
+    const students = await Student.findAll({
+      include: [{ model: Class, attributes: ['name', 'section'] }],
+      order: [['id', 'DESC']]
+    });
+    res.json({ success: true, data: students });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 };
 
 const getStudentById = async (req, res) => {
-  const student = students.find((s) => s.id === parseInt(req.params.id));
-
-  if (!student) {
-    return res.status(404).json({
-      success: false,
-      message: "Student not found",
+  try {
+    const student = await Student.findByPk(req.params.id, {
+      include: [{ model: Class, attributes: ['name', 'section'] }]
     });
+    if (!student) {
+      return res.status(404).json({ success: false, message: "Student not found" });
+    }
+    res.json({ success: true, data: student });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
-
-  return res.status(200).json({
-    success: true,
-    message: "Student fetched successfully",
-    data: student,
-  });
 };
 
 const createStudent = async (req, res) => {
-  const { name, email, roll, class: className } = req.body;
-
-  if (!name || !email || !roll || !className) {
-    return res.status(400).json({
-      success: false,
-      message: "Sab fields bharni zaroori hain",
-    });
+  try {
+    const student = await Student.create(req.body);
+    res.status(201).json({ success: true, data: student });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
-
-  const newStudent = {
-    id: students.length + 1,
-    name,
-    email,
-    roll,
-    class: className,
-  };
-
-  students.push(newStudent);
-
-  return res.status(201).json({
-    success: true,
-    message: "Student created successfully",
-    data: newStudent,
-  });
 };
 
 const updateStudent = async (req, res) => {
-  const index = students.findIndex((s) => s.id === parseInt(req.params.id));
-
-  if (index === -1) {
-    return res.status(404).json({
-      success: false,
-      message: "Student not found",
-    });
+  try {
+    const student = await Student.findByPk(req.params.id);
+    if (!student) {
+      return res.status(404).json({ success: false, message: "Student not found" });
+    }
+    await student.update(req.body);
+    res.json({ success: true, data: student });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
-
-  students[index] = { ...students[index], ...req.body };
-
-  return res.status(200).json({
-    success: true,
-    message: "Student updated successfully",
-    data: students[index],
-  });
 };
 
 const deleteStudent = async (req, res) => {
-  const index = students.findIndex((s) => s.id === parseInt(req.params.id));
-
-  if (index === -1) {
-    return res.status(404).json({
-      success: false,
-      message: "Student not found",
-    });
+  try {
+    const student = await Student.findByPk(req.params.id);
+    if (!student) {
+      return res.status(404).json({ success: false, message: "Student not found" });
+    }
+    await student.destroy();
+    res.json({ success: true, message: "Student deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
-
-  students.splice(index, 1);
-
-  return res.status(200).json({
-    success: true,
-    message: "Student deleted successfully",
-    data: {},
-  });
 };
 
 export {
@@ -117,5 +67,5 @@ export {
   getStudentById,
   createStudent,
   updateStudent,
-  deleteStudent,
+  deleteStudent
 };
