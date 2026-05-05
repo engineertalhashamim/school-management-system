@@ -1,33 +1,25 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../config/db.js';
 
-const Student = sequelize.define('Student', {
+const Subject = sequelize.define('Subject', {
   name: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  email: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true,
-    validate: {
-      isEmail: true
-    }
-  },
-  roll_number: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true
   },
-  class_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false
+  code: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
+  },
+  description: {
+    type: DataTypes.TEXT
   }
 }, {
-  tableName: 'students',
+  tableName: 'subjects',
   timestamps: true,
   createdAt: 'created_at',
   updatedAt: 'updated_at'
 });
 
-export default Student;
+export default Subject;

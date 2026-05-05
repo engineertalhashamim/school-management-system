@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../config/db.js';
 
-const Student = sequelize.define('Student', {
+const Teacher = sequelize.define('Teacher', {
   name: {
     type: DataTypes.STRING,
     allowNull: false
@@ -14,20 +14,20 @@ const Student = sequelize.define('Student', {
       isEmail: true
     }
   },
-  roll_number: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true
+  qualification: {
+    type: DataTypes.STRING
   },
-  class_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false
+  phone: {
+    type: DataTypes.STRING
+  },
+  address: {
+    type: DataTypes.TEXT
   }
 }, {
-  tableName: 'students',
+  tableName: 'teachers',
   timestamps: true,
   createdAt: 'created_at',
   updatedAt: 'updated_at'
 });
 
-export default Student;
+export default Teacher;
